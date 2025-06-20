@@ -21,7 +21,7 @@ const ClientSlider = () => {
   return (
     <section className="bg-white dark:bg-gray-900 py-10 rounded-2xl mb-24">
       <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-gray-800 dark:text-white">
-        We've helped thousands of sales teams
+        We've helped thousands of sales teams
       </h2>
       <Marquee
         gradient={false}

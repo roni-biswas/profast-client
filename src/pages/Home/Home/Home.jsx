@@ -3,6 +3,7 @@ import Banner from "../Banner/Banner";
 import Services from "../services/Services";
 import ClientSlider from "../ClientSlider/ClientSlider";
 import Benefits from "../Benefits/Benefits";
+import BeMerchant from "../BeMerchant/BeMerchant";
 
 const Home = () => {
   return (
@@ -11,6 +12,7 @@ const Home = () => {
       <Services />
       <ClientSlider />
       <Benefits />
+      <BeMerchant />
     </div>
   );
 };

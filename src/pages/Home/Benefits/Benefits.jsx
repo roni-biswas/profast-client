@@ -33,7 +33,7 @@ const Benefits = () => {
         {benefits.map((item) => (
           <div
             key={item.id}
-            className="card card-side bg-base-100 dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700"
+            className="card card-side bg-base-100 dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700 p-4"
           >
             {/* Left image */}
             <figure className="w-32 md:w-48 flex-shrink-0 p-4">
@@ -51,7 +51,7 @@ const Benefits = () => {
             ></div>
 
             {/* Right content */}
-            <div className="card-body">
+            <div className="card-body justify-center">
               <h3 className="card-title text-xl md:text-2xl text-gray-800 dark:text-white">
                 {item.title}
               </h3>

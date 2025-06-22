@@ -1,5 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router";
+import SocialLogin from "../SocialLogin/SocialLogin";
 
 const Login = () => {
   const {
@@ -43,8 +45,17 @@ const Login = () => {
           <div>
             <a className="link link-hover">Forgot password?</a>
           </div>
-          <button className="btn btn-neutral mt-4">Login</button>
+          <button className="btn btn-primary text-black mt-4">Login</button>
         </form>
+        <p>
+          <small>
+            Don't have any account?{" "}
+            <Link to="/register" className="btn btn-link p-0 h-0 font-normal">
+              Register
+            </Link>
+          </small>
+        </p>
+        <SocialLogin />
       </div>
     </div>
   );

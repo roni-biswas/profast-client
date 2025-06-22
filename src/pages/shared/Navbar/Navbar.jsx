@@ -2,6 +2,7 @@ import React from "react";
 import { Link, NavLink, useNavigate } from "react-router";
 import ProFastLogo from "../ProFastLogo/ProFastLogo";
 import useAuth from "../../../hooks/useAuth";
+import Swal from "sweetalert2";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
@@ -13,16 +14,33 @@ const Navbar = () => {
         <NavLink to="/">Home</NavLink>
       </li>
       <li>
+        <NavLink to="/coverage">Coverage</NavLink>
+      </li>
+      <li>
         <NavLink to="/about">About Us</NavLink>
       </li>
     </>
   );
 
   const handleLogOut = () => {
-    logOut().then(() => {
-      alert("User Successfully logout!");
-      navigate("/");
-    });
+    logOut()
+      .then(() => {
+        Swal.fire({
+          title: "Logout Successful",
+          text: "You have been logged out.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+        navigate("/");
+      })
+      .catch((error) => {
+        Swal.fire({
+          title: "Logout Failed",
+          text: error.message,
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
+      });
   };
 
   return (

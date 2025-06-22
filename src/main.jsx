@@ -6,7 +6,7 @@ import router from "./routers/router.jsx";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import AuthProvider from "./contexts/AuthContexts/AuthProvider.jsx";
-Aos.init();
+Aos.init({ startEvent: "DOMContentLoaded" });
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

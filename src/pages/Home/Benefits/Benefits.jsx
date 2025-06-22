@@ -33,10 +33,15 @@ const Benefits = () => {
         {benefits.map((item) => (
           <div
             key={item.id}
-            className="card card-side bg-base-100 dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700 p-4"
+            className="card card-side bg-base-100 dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700 p-4 overflow-x-hidden"
           >
             {/* Left image */}
-            <figure className="w-32 md:w-48 flex-shrink-0 p-4">
+            <figure
+              data-aos="slide-right"
+              data-aos-duration="1000"
+              data-aos-delay="100"
+              className="w-32 md:w-48 flex-shrink-0 p-4"
+            >
               <img
                 src={item.image}
                 alt={item.title}
@@ -51,7 +56,12 @@ const Benefits = () => {
             ></div>
 
             {/* Right content */}
-            <div className="card-body justify-center">
+            <div
+              data-aos="slide-left"
+              data-aos-duration="1000"
+              data-aos-delay="100"
+              className="card-body justify-center"
+            >
               <h3 className="card-title text-xl md:text-2xl text-gray-800 dark:text-white">
                 {item.title}
               </h3>

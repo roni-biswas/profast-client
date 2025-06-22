@@ -5,6 +5,8 @@ const BeMerchant = () => {
   return (
     <div
       data-aos="zoom-in-up"
+      data-aos-duration="1500"
+      data-aos-delay="300"
       className="bg-[url('assets/be-a-merchant-bg.png')] bg-no-repeat bg-[#03373D] p-20 rounded-4xl mb-24"
     >
       <div className="hero-content flex-col lg:flex-row-reverse">

@@ -1,19 +1,28 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useLoaderData } from "react-router";
+import Swal from "sweetalert2";
+import useAuth from "../../hooks/useAuth";
+
+const generateTrackingID = () => {
+  const date = new Date();
+  const datePart = date.toISOString().split("T")[0].replace(/-/g, "");
+  const rand = Math.random().toString(36).substring(2, 7).toUpperCase();
+  return `PCL-${datePart}-${rand}`;
+};
 
 const SendParcel = () => {
+  const { user } = useAuth();
   const serviceCenters = useLoaderData();
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm();
 
-  // Extract unique regions
   const uniqueRegions = [...new Set(serviceCenters.map((w) => w.region))];
-  // Get districts by region
   const getDistrictsByRegion = (region) =>
     serviceCenters.filter((w) => w.region === region).map((w) => w.district);
 
@@ -22,7 +31,92 @@ const SendParcel = () => {
   const receiverRegion = watch("receiver_region");
 
   const onSubmit = (data) => {
-    console.log(data);
+    const weight = parseFloat(data?.weight) || 0;
+    const isSameDistrict = data?.sender_center === data?.receiver_center;
+
+    let baseCost = 0;
+    let extraCost = 0;
+    let breakdown = "";
+
+    if (data.type === "document") {
+      baseCost = isSameDistrict ? 60 : 80;
+      breakdown = `Document delivery <b>${
+        isSameDistrict ? "within" : "outside"
+      }</b> the district.`;
+    } else {
+      if (weight <= 3) {
+        baseCost = isSameDistrict ? 110 : 150;
+        breakdown = `Non-document up to 3kg <b>${
+          isSameDistrict ? "within" : "outside"
+        }</b> the district.`;
+      } else {
+        const extraKg = weight - 3;
+        const perKgCharge = extraKg * 40;
+        const districtExtra = isSameDistrict ? 0 : 40;
+
+        baseCost = isSameDistrict ? 110 : 150;
+        extraCost = perKgCharge + districtExtra;
+
+        breakdown = `
+          Non-document over 3kg <b>${
+            isSameDistrict ? "within" : "outside"
+          }</b> the district.<br/>
+          Extra charge: ৳40 x ${extraKg.toFixed(1)}kg = ৳${perKgCharge}<br/>
+          ${districtExtra ? "+ ৳40 extra for outside district delivery" : ""}
+        `;
+      }
+    }
+
+    const totalCost = baseCost + extraCost;
+
+    Swal.fire({
+      title: "Delivery Cost Breakdown",
+      icon: "info",
+      html: `
+        <div class="text-left text-base space-y-2">
+          <p><strong>Parcel Type:</strong> ${data.type}</p>
+          ${
+            data.type === "non-document"
+              ? `<p><strong>Weight:</strong> ${weight} kg</p>`
+              : ""
+          }
+          <p><strong>Delivery Zone:</strong> ${
+            isSameDistrict ? "Within Same District" : "Outside District"
+          }</p>
+          <hr class="my-2"/>
+          <p><strong>Base Cost:</strong> ৳${baseCost}</p>
+          ${
+            extraCost > 0
+              ? `<p><strong>Extra Charges:</strong> ৳${extraCost}</p>`
+              : ""
+          }
+          <div class="text-gray-500 text-sm">${breakdown}</div>
+          <hr class="my-2"/>
+          <p class="text-xl font-bold text-green-600">Total Cost: ৳${totalCost}</p>
+        </div>
+      `,
+      showDenyButton: true,
+      confirmButtonText: "💳 Proceed to Payment",
+      denyButtonText: "✏️ Continue Editing",
+      confirmButtonColor: "#16a34a",
+      denyButtonColor: "#d3d3d3",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const parcelData = {
+          ...data,
+          cost: totalCost,
+          tracking_id: generateTrackingID(),
+          creation_date: new Date().toISOString(),
+          payment_status: "unpaid",
+          delivery_status: "not_collected",
+          created_by: user?.email,
+        };
+
+        console.log("Confirmed Parcel:", parcelData);
+        Swal.fire("Saved!", "Your parcel has been submitted.", "success");
+        reset();
+      }
+    });
   };
 
   return (
@@ -38,7 +132,6 @@ const SendParcel = () => {
         <div className="border p-4 rounded-xl shadow-md space-y-4">
           <h3 className="font-semibold text-xl">Parcel Info</h3>
           <div className="space-y-4">
-            {/* Parcel Name */}
             <div>
               <label className="label">Parcel Name</label>
               <input
@@ -51,7 +144,6 @@ const SendParcel = () => {
               )}
             </div>
 
-            {/* Type */}
             <div>
               <label className="label">Type</label>
               <div className="flex gap-4">
@@ -79,7 +171,6 @@ const SendParcel = () => {
               )}
             </div>
 
-            {/* Weight */}
             <div>
               <label className="label">Weight (kg)</label>
               <input
@@ -98,9 +189,7 @@ const SendParcel = () => {
           </div>
         </div>
 
-        {/* Sender & Receiver Info */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Sender Info */}
           <div className="border p-4 rounded-xl shadow-md space-y-4">
             <h3 className="font-semibold text-xl">Sender Info</h3>
             <div className="grid grid-cols-1 gap-4">
@@ -149,7 +238,6 @@ const SendParcel = () => {
             </div>
           </div>
 
-          {/* Receiver Info */}
           <div className="border p-4 rounded-xl shadow-md space-y-4">
             <h3 className="font-semibold text-xl">Receiver Info</h3>
             <div className="grid grid-cols-1 gap-4">
@@ -199,7 +287,6 @@ const SendParcel = () => {
           </div>
         </div>
 
-        {/* Submit Button */}
         <div className="text-center">
           <button className="btn btn-primary text-black">Submit</button>
         </div>

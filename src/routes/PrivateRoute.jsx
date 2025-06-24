@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import Loading from "../pages/shared/Loading/Loading";
 import { Navigate } from "react-router";
+import useAuth from "../hooks/useAuth";
 
 const PrivateRoute = ({ children }) => {
-  const { user, loading } = useState();
+  const { user, loading } = useAuth();
 
   if (loading) return <Loading />;
 

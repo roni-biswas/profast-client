@@ -58,7 +58,7 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "myParcels",
+        path: "my-parcels",
         Component: MyParcels,
       },
     ],

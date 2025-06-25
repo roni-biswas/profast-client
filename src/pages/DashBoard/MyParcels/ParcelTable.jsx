@@ -1,4 +1,5 @@
 import React from "react";
+import Swal from "sweetalert2";
 // date → “24 Jun 2025”
 const formatDate = (isoString) =>
   new Date(isoString).toLocaleDateString("en-GB", {
@@ -8,6 +9,8 @@ const formatDate = (isoString) =>
   });
 
 const ParcelTable = ({ parcels, onView, onPay, onDelete }) => {
+  // SweetAlert2-powered delete
+
   return (
     <div className="overflow-x-auto">
       <table className="table table-zebra w-full">
@@ -15,6 +18,7 @@ const ParcelTable = ({ parcels, onView, onPay, onDelete }) => {
         <thead>
           <tr className="text-base">
             <th>#</th>
+            <th>Title</th>
             <th>Type</th>
             <th>Created&nbsp;At</th>
             <th>Cost&nbsp;(৳)</th>
@@ -29,8 +33,13 @@ const ParcelTable = ({ parcels, onView, onPay, onDelete }) => {
             <tr key={p._id}>
               <th>{i + 1}</th>
 
+              {/* Title */}
+              <td className="max-w-[150px] truncate">{p.title}</td>
+
               {/* Document / Non-document */}
-              <td>{p.type === "document" ? "Document" : "Non-Document"}</td>
+              <td className="capitalize">
+                {p.type === "document" ? "Document" : "Non-Document"}
+              </td>
 
               {/* Created date */}
               <td>{formatDate(p.creation_date)}</td>
@@ -69,7 +78,7 @@ const ParcelTable = ({ parcels, onView, onPay, onDelete }) => {
                 )}
                 <button
                   className="btn btn-error btn-xs"
-                  onClick={() => onDelete?.(p)}
+                  onClick={() => onDelete?.(p._id)}
                 >
                   Delete
                 </button>

@@ -4,10 +4,12 @@ import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import ParcelTable from "./ParcelTable";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router";
 
 const MyParcels = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
   const { data: parcels = [], refetch } = useQuery({
     queryKey: ["my-parcels", user?.email],
     queryFn: async () => {
@@ -17,7 +19,10 @@ const MyParcels = () => {
   });
 
   const handleView = (p) => console.log("view →", p);
-  const handlePay = (p) => console.log("pay →", p);
+  const handlePay = (id) => {
+    navigate(`/dashboard/payment/${id}`);
+  };
+
   const handleDelete = async (id) => {
     const confirm = await Swal.fire({
       title: "Delete this parcel?",
